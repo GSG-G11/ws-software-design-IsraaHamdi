@@ -2,7 +2,7 @@
  * Exercise: Create some modules!
  *
  * When you think you have finished, run the command:
- *   npm run s2.modules
+ *   npm run module
  * This will run a series of tests which should all pass.
  */
 'use strict';
