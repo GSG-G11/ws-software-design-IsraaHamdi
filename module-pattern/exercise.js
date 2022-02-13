@@ -19,30 +19,32 @@
  */
  var UrlParser  = (function () {
   // fill in ...
- 
+  function protocol(url) {
+    return url.split(":")[0]
+  }
+  function domain(url) {
+    return url.split("//")[1].split("/")[0]
+  }
+  function path(url) {
+    return url.split("//")[1].split("/")[1].split("?")[0]
+  }
+  function querystring(url) {
+    return url.split("?")[1]
+  }
   return {
     // a function that takes a URL and returns its protocol
-    protocol: function protocol(url) {
-      return url.split(":")[0]
-    },
+    protocol: protocol,
 
     // a function that takes a URL and returns its domain
-    domain:  function protocol(url) {
-      console.log( url.split("//")[1])
-      return url.split("//")[1].split("/")[0]
-    },
+    domain:domain,
 
     // a function that takes a URL and returns its path
-    path: function protocol(url) {
-      console.log( url.split("//")[0])
-      return url.split("//")[1].split("/")[1].split("?")[0]
-    },
+    path:path,
 
     // a function that takes a URL and returns its query string
-    querystring:  function protocol(url) {
-      return url.split("?")[1]
-    },
-  };
+    querystring: querystring,
+
+  }
 })();
 
 
@@ -61,8 +63,40 @@
  * exampleBuilder.
  */
 var createUrlBuilder = function (host) {
+  let URL=host
+  function convertQueryToString (query) {
+    let keys=Object.keys(query)
+    /*add = between each key and value ,also add & at end of value 
+    but if key is the last in array keys & not added */
+    let stringQuery =""
+    keys.map(function (key,i) {
+      if(i === keys.length-1) {
+        stringQuery +=`${key}=${query[key]}` 
+      }else {
+        stringQuery +=`${key}=${query[key]}&` 
+      }
+    })
+    return stringQuery
+  }
 
+  var builder = function (obj){
+    if (obj.hasOwnProperty('path')) {
+      URL=`${URL}/${obj.path}`
+    }
+    if (obj.hasOwnProperty('query')) {
+      URL=`${URL}?${convertQueryToString(obj.query)}`
+    }
+    builder.path = function (path) {
+      return `${host}/${path}`
+     }
+     builder.query = function (query) {
+       return `${host}?${convertQueryToString(query)}`
   
+    }
+    return URL
+  }
+ 
+  return builder
 };
 
 
